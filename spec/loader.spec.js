@@ -3,7 +3,7 @@ import m from 'mithril';
 
 export default describe("postgrest.loader", function(){
   var vm = null;
-  var postgrest = new Postgrest();
+  var postgrest = new Postgrest(m);
   postgrest.init(apiPrefix);
 
   beforeEach(function(){
@@ -23,9 +23,9 @@ export default describe("postgrest.loader", function(){
     expect(vm()).toEqual(true);
   });
 
-  it("should update loader state to true before resolving request", function() {
+  it("should update loader state to true before resolving request", async function() {
     vm(false);
     vm.load();
-    expect(vm()).toEqual(false);
+    expect(vm()).toEqual(true);
   });
 });

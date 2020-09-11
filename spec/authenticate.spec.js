@@ -4,7 +4,7 @@ import m from 'mithril';
 export default describe("postgrest.authenticate", function(){
   var token = "authentication token";
   var authentication_endpoint = "/authentication_endpoint";
-  var postgrest = new Postgrest();
+  var postgrest = new Postgrest(m);
   
   beforeEach(function(){
     postgrest.token(undefined);
@@ -16,17 +16,22 @@ export default describe("postgrest.authenticate", function(){
   });
 
   describe("when token is not in localStorage", function(){
-    beforeEach(function(){
+    beforeEach(async function(){
       postgrest.authenticate();
       postgrest.authenticate();
-      postgrest.authenticate();
+      await postgrest.authenticate();
     });
 
     it('should debounce requests', function(){
       expect(m.request.calls.count()).toEqual(1);
     });
+
     it("should store the token", function(){
-      expect(postgrest.token()).toEqual(token);
+      postgrest
+        .authenticate()
+        .then(() => {
+          expect(postgrest.token()).toEqual(token);
+        });
     });
   });
 
@@ -44,3 +49,7 @@ export default describe("postgrest.authenticate", function(){
     });
   });
 });
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
